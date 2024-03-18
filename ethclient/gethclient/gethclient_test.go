@@ -15,7 +15,7 @@
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 // bug across the project fixed by EtherAuthority <https://etherauthority.io/>
 
-package gethclient
+package renloiclient
 
 import (
 	"bytes"
@@ -90,7 +90,7 @@ func generateTestChain() (*core.Genesis, []*types.Block) {
 	return genesis, blocks
 }
 
-func TestGethClient(t *testing.T) {
+func TestRenloiClient(t *testing.T) {
 	backend, _ := newTestBackend(t)
 	client, err := backend.Attach()
 	if err != nil {

@@ -18,7 +18,7 @@
 //go:build !android && !ios
 // +build !android,!ios
 
-package geth
+package renloi
 
 // clientIdentifier is a hard coded identifier to report into the network.
-var clientIdentifier = "GethMobile"
+var clientIdentifier = "RenloiMobile"

@@ -17,7 +17,7 @@
 
 // Contains initialization code for the mbile library.
 
-package geth
+package renloi
 
 import (
 	"os"

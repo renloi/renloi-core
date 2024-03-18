@@ -18,7 +18,7 @@
 // Contains all the wrappers from the accounts package to support client side key
 // management on mobile platforms.
 
-package geth
+package renloi
 
 import (
 	"errors"

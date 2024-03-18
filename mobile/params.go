@@ -17,7 +17,7 @@
 
 // Contains all the wrappers from the params package.
 
-package geth
+package renloi
 
 import (
 	"github.com/renloi/renloi-core/p2p/enode"

@@ -15,7 +15,7 @@
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 // bug across the project fixed by EtherAuthority <https://etherauthority.io/>
 
-// package web3ext contains geth specific web3.js extensions.
+// package web3ext contains renloi specific web3.js extensions.
 package web3ext
 
 var Modules = map[string]string{

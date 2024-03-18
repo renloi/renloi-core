@@ -17,7 +17,7 @@
 
 // Contains a wrapper for the Ethereum client.
 
-package geth
+package renloi
 
 import (
 	"math/big"

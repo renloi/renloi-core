@@ -11,8 +11,8 @@ Vcs-Browser: https://github.com/renloi/renloi-core
 Package: {{.Name}}
 Architecture: any
 Depends: ${misc:Depends}, {{.ExeList}}
-Description: Meta-package to install geth and other tools
- Meta-package to install geth and other tools
+Description: Meta-package to install renloi and other tools
+ Meta-package to install renloi and other tools
 
 {{range .Executables}}
 Package: {{$.ExeName .}}

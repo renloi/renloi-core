@@ -30,14 +30,14 @@ import (
 )
 
 func tmpdir(t *testing.T) string {
-	dir, err := ioutil.TempDir("", "geth-test")
+	dir, err := ioutil.TempDir("", "renloi-test")
 	if err != nil {
 		t.Fatal(err)
 	}
 	return dir
 }
 
-type testgeth struct {
+type testrenloi struct {
 	*cmdtest.TestCmd
 
 	// template variables for expect
@@ -46,8 +46,8 @@ type testgeth struct {
 }
 
 func init() {
-	// Run the app if we've been exec'd as "geth-test" in runGeth.
-	reexec.Register("geth-test", func() {
+	// Run the app if we've been exec'd as "renloi-test" in runRenloi.
+	reexec.Register("renloi-test", func() {
 		if err := app.Run(os.Args); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
@@ -64,9 +64,9 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-// spawns geth with the given command line args. If the args don't set --datadir, the
+// spawns renloi with the given command line args. If the args don't set --datadir, the
 // child g gets a temporary data directory.
-func runGeth(t *testing.T, args ...string) *testgeth {
+func runRenloi(t *testing.T, args ...string) *testrenloi {
 	tt := &testgeth{}
 	tt.TestCmd = cmdtest.NewTestCmd(t, tt)
 	for i, arg := range args {
@@ -93,9 +93,9 @@ func runGeth(t *testing.T, args ...string) *testgeth {
 		}()
 	}
 
-	// Boot "geth". This actually runs the test binary but the TestMain
+	// Boot "renloi". This actually runs the test binary but the TestMain
 	// function will prevent any tests from running.
-	tt.Run("geth-test", args...)
+	tt.Run("renloi-test", args...)
 
 	return tt
 }

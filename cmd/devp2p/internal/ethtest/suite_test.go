@@ -36,13 +36,13 @@ var (
 )
 
 func TestEthSuite(t *testing.T) {
-	geth, err := runGeth()
+	renloi, err := runRenloi()
 	if err != nil {
-		t.Fatalf("could not run geth: %v", err)
+		t.Fatalf("could not run renloi: %v", err)
 	}
-	defer geth.Close()
+	defer renloi.Close()
 
-	suite, err := NewSuite(geth.Server().Self(), fullchainFile, genesisFile)
+	suite, err := NewSuite(renloi.Server().Self(), fullchainFile, genesisFile)
 	if err != nil {
 		t.Fatalf("could not create new test suite: %v", err)
 	}
@@ -56,8 +56,8 @@ func TestEthSuite(t *testing.T) {
 	}
 }
 
-// runGeth creates and starts a geth node
-func runGeth() (*node.Node, error) {
+// runRenloi creates and starts a renloi node
+func runRenloi() (*node.Node, error) {
 	stack, err := node.New(&node.Config{
 		P2P: p2p.Config{
 			ListenAddr:  "127.0.0.1:0",
@@ -70,7 +70,7 @@ func runGeth() (*node.Node, error) {
 		return nil, err
 	}
 
-	err = setupGeth(stack)
+	err = setupRenloi(stack)
 	if err != nil {
 		stack.Close()
 		return nil, err
@@ -82,7 +82,7 @@ func runGeth() (*node.Node, error) {
 	return stack, nil
 }
 
-func setupGeth(stack *node.Node) error {
+func setupRenloi(stack *node.Node) error {
 	chain, err := loadChain(halfchainFile, genesisFile)
 	if err != nil {
 		return err

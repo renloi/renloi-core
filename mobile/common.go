@@ -17,7 +17,7 @@
 
 // Contains all the wrappers from the common package.
 
-package geth
+package renloi
 
 import (
 	"encoding/hex"

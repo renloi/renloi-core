@@ -23,9 +23,9 @@ import (
 
 const (
 	VersionMajor = 1          // Major version component of the current release
-	VersionMinor = 3          // Minor version component of the current release
+	VersionMinor = 0          // Minor version component of the current release
 	VersionPatch = 0          // Patch version component of the current release
-	VersionMeta  = "unstable" // Version metadata to append to the version string
+	VersionMeta  = "stable" // Version metadata to append to the version string
 )
 
 // Version holds the textual version string.
@@ -42,7 +42,7 @@ var VersionWithMeta = func() string {
 	return v
 }()
 
-// ArchiveVersion holds the textual version string used for Geth archives.
+// ArchiveVersion holds the textual version string used for Renloi archives.
 // e.g. "1.8.11-dea1ce05" for stable releases, or
 //      "1.8.13-unstable-21c059b6" for unstable releases
 func ArchiveVersion(gitCommit string) string {

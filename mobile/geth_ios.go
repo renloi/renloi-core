@@ -18,7 +18,7 @@
 //go:build ios
 // +build ios
 
-package geth
+package renloi
 
 // clientIdentifier is a hard coded identifier to report into the network.
-var clientIdentifier = "iGeth"
+var clientIdentifier = "iRenloi"

@@ -48,7 +48,7 @@ func FuzzCrossPairing(data []byte) int {
 		return 0
 	}
 
-	// compute pairing using geth
+	// compute pairing using renloi
 	engine := bls12381.NewPairingEngine()
 	engine.AddPair(kpG1, kpG2)
 	kResult := engine.Result()
@@ -61,7 +61,7 @@ func FuzzCrossPairing(data []byte) int {
 
 	// compare result
 	if !(bytes.Equal(cResult.Marshal(), bls12381.NewGT().ToBytes(kResult))) {
-		panic("pairing mismatch gnark / geth ")
+		panic("pairing mismatch gnark / renloi ")
 	}
 
 	return 1
@@ -94,7 +94,7 @@ func FuzzCrossG1Add(data []byte) int {
 
 	// compare result
 	if !(bytes.Equal(cp.Marshal(), g1.ToBytes(&kp))) {
-		panic("G1 point addition mismatch gnark / geth ")
+		panic("G1 point addition mismatch gnark / renloi ")
 	}
 
 	return 1
@@ -127,7 +127,7 @@ func FuzzCrossG2Add(data []byte) int {
 
 	// compare result
 	if !(bytes.Equal(cp.Marshal(), g2.ToBytes(&kp))) {
-		panic("G2 point addition mismatch gnark / geth ")
+		panic("G2 point addition mismatch gnark / renloi ")
 	}
 
 	return 1
@@ -136,14 +136,14 @@ func FuzzCrossG2Add(data []byte) int {
 func FuzzCrossG1MultiExp(data []byte) int {
 	var (
 		input        = bytes.NewReader(data)
-		gethScalars  []*big.Int
+		renloiScalars  []*big.Int
 		gnarkScalars []fr.Element
-		gethPoints   []*bls12381.PointG1
+		renloiPoints   []*bls12381.PointG1
 		gnarkPoints  []gnark.G1Affine
 	)
 	// n random scalars (max 17)
 	for i := 0; i < 17; i++ {
-		// note that geth/crypto/bls12381 works only with scalars <= 32bytes
+		// note that renloi/crypto/bls12381 works only with scalars <= 32bytes
 		s, err := randomScalar(input, fr.Modulus())
 		if err != nil {
 			break
@@ -153,24 +153,24 @@ func FuzzCrossG1MultiExp(data []byte) int {
 		if err != nil {
 			break
 		}
-		gethScalars = append(gethScalars, s)
+		renloiScalars = append(renloiScalars, s)
 		var gnarkScalar = &fr.Element{}
 		gnarkScalar = gnarkScalar.SetBigInt(s).FromMont()
 		gnarkScalars = append(gnarkScalars, *gnarkScalar)
 
-		gethPoints = append(gethPoints, new(bls12381.PointG1).Set(kp1))
+		renloiPoints = append(renloiPoints, new(bls12381.PointG1).Set(kp1))
 		gnarkPoints = append(gnarkPoints, *cp1)
 	}
-	if len(gethScalars) == 0 {
+	if len(renloiScalars) == 0 {
 		return 0
 	}
 	// compute multi exponentiation
 	g1 := bls12381.NewG1()
 	kp := bls12381.PointG1{}
-	if _, err := g1.MultiExp(&kp, gethPoints, gethScalars); err != nil {
-		panic(fmt.Sprintf("G1 multi exponentiation errored (geth): %v", err))
+	if _, err := g1.MultiExp(&kp, renloiPoints, renloiScalars); err != nil {
+		panic(fmt.Sprintf("G1 multi exponentiation errored (renloi): %v", err))
 	}
-	// note that geth/crypto/bls12381.MultiExp mutates the scalars slice (and sets all the scalars to zero)
+	// note that renloi/crypto/bls12381.MultiExp mutates the scalars slice (and sets all the scalars to zero)
 
 	// gnark multi exp
 	cp := new(gnark.G1Affine)
@@ -178,7 +178,7 @@ func FuzzCrossG1MultiExp(data []byte) int {
 
 	// compare result
 	if !(bytes.Equal(cp.Marshal(), g1.ToBytes(&kp))) {
-		panic("G1 multi exponentiation mismatch gnark / geth ")
+		panic("G1 multi exponentiation mismatch gnark / renloi ")
 	}
 
 	return 1
@@ -197,14 +197,14 @@ func getG1Points(input io.Reader) (*bls12381.PointG1, *gnark.G1Affine, error) {
 	cp.ScalarMultiplication(&g1Gen, s)
 	cpBytes := cp.Marshal()
 
-	// marshal gnark point -> geth point
+	// marshal gnark point -> renloi point
 	g1 := bls12381.NewG1()
 	kp, err := g1.FromBytes(cpBytes)
 	if err != nil {
-		panic(fmt.Sprintf("Could not marshal gnark.G1 -> geth.G1: %v", err))
+		panic(fmt.Sprintf("Could not marshal gnark.G1 -> renloi.G1: %v", err))
 	}
 	if !bytes.Equal(g1.ToBytes(kp), cpBytes) {
-		panic("bytes(gnark.G1) != bytes(geth.G1)")
+		panic("bytes(gnark.G1) != bytes(renloi.G1)")
 	}
 
 	return kp, cp, nil
@@ -223,14 +223,14 @@ func getG2Points(input io.Reader) (*bls12381.PointG2, *gnark.G2Affine, error) {
 	cp.ScalarMultiplication(&g2Gen, s)
 	cpBytes := cp.Marshal()
 
-	// marshal gnark point -> geth point
+	// marshal gnark point -> renloi point
 	g2 := bls12381.NewG2()
 	kp, err := g2.FromBytes(cpBytes)
 	if err != nil {
-		panic(fmt.Sprintf("Could not marshal gnark.G2 -> geth.G2: %v", err))
+		panic(fmt.Sprintf("Could not marshal gnark.G2 -> renloi.G2: %v", err))
 	}
 	if !bytes.Equal(g2.ToBytes(kp), cpBytes) {
-		panic("bytes(gnark.G2) != bytes(geth.G2)")
+		panic("bytes(gnark.G2) != bytes(renloi.G2)")
 	}
 
 	return kp, cp, nil

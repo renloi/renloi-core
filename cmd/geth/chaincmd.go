@@ -139,7 +139,7 @@ be gzipped.`,
 		Category: "BLOCKCHAIN COMMANDS",
 		Description: `
 The import-preimages command imports hash preimages from an RLP encoded stream.
-It's deprecated, please use "geth db import" instead.
+It's deprecated, please use "renloi db import" instead.
 `,
 	}
 	exportPreimagesCommand = cli.Command{
@@ -155,7 +155,7 @@ It's deprecated, please use "geth db import" instead.
 		Category: "BLOCKCHAIN COMMANDS",
 		Description: `
 The export-preimages command exports hash preimages to an RLP encoded stream.
-It's deprecated, please use "geth db export" instead.
+It's deprecated, please use "renloi db export" instead.
 `,
 	}
 	dumpCommand = cli.Command{

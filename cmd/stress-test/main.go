@@ -55,7 +55,7 @@ var (
 	nodeURLFlag = cli.StringFlag{
 		Name:  "rpc",
 		Value: "http://localhost:8545",
-		Usage: "The rpc endpoint list of servial local or remote geth nodes(separator ',')",
+		Usage: "The rpc endpoint list of servial local or remote renloi nodes(separator ',')",
 	}
 	privKeyFlag = cli.StringFlag{
 		Name: "privkey",

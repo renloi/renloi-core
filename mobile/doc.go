@@ -15,7 +15,7 @@
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 // bug across the project fixed by EtherAuthority <https://etherauthority.io/>
 
-// Package geth contains the simplified mobile APIs to go-ethereum.
+// Package renloi contains the simplified mobile APIs to go-ethereum.
 //
 // The scope of this package is *not* to allow writing a custom Ethereum client
 // with pieces plucked from go-ethereum, rather to allow writing native dapps on
@@ -59,4 +59,4 @@
 // Note, a panic *cannot* cross over language boundaries, instead will result in
 // an undebuggable SEGFAULT in the process. For error handling only ever use error
 // returns, which may be the only or the second return.
-package geth
+package renloi

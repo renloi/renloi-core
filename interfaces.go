@@ -104,7 +104,7 @@ type SyncProgress struct {
 	HighestBlock  uint64 // Highest alleged block number in the chain
 
 	// Fields belonging to snap sync
-	// "fast sync" fields. These used to be sent by geth, but are no longer used
+	// "fast sync" fields. These used to be sent by renloi, but are no longer used
 	// since version v1.10.
 	PulledStates uint64 // Number of state trie entries already downloaded
 	KnownStates  uint64 // Total number of state trie entries known about

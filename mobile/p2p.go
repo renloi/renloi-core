@@ -17,7 +17,7 @@
 
 // Contains wrappers for the p2p package.
 
-package geth
+package renloi
 
 import (
 	"errors"

@@ -15,7 +15,7 @@
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 // bug across the project fixed by EtherAuthority <https://etherauthority.io/>
 
-package geth
+package renloi
 
 import (
 	"fmt"
