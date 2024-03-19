@@ -26,6 +26,7 @@ task2(){
 task3(){
   # getting golang TASK 3
   echo -e "\n${ORANGE}TASK: ${GREEN}[Getting GO]${NC}\n"
+  mkdir tmp && mkdir chaindata
   cd ./tmp && wget "https://go.dev/dl/go1.22.1.linux-amd64.tar.gz"
   echo -e "\n${GREEN}[TASK 3 PASSED]${NC}\n"
 }
@@ -53,8 +54,6 @@ task5(){
 task6(){
   # do make all TASK 6
   echo -e "\n${ORANGE}TASK: ${GREEN}[Building Backend]${NC}\n"
-  git clone https://github.com/renloi/renloi-core
-  cd renloi-core
   make all
   mv build/bin/renloi /usr/bin/renloi
   echo -e "\n${GREEN}[TASK 6 PASSED]${NC}\n"
