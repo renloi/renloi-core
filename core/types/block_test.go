@@ -106,7 +106,7 @@ func TestEIP1559BlockEncoding(t *testing.T) {
 	}}
 	to := common.HexToAddress("095e7baea6a6c7c4c2dfeb977efac326af552d87")
 	txdata := &DynamicFeeTx{
-		ChainID:    big.NewInt(1),
+		ChainID:    big.NewInt(268),
 		Nonce:      0,
 		To:         &to,
 		Gas:        123457,
@@ -171,7 +171,7 @@ func TestEIP2718BlockEncoding(t *testing.T) {
 	// Create ACL tx.
 	addr := common.HexToAddress("0x0000000000000000000000000000000000000001")
 	tx2 := NewTx(&AccessListTx{
-		ChainID:    big.NewInt(1),
+		ChainID:    big.NewInt(268),
 		Nonce:      0,
 		To:         &to,
 		Gas:        123457,
