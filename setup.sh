@@ -76,20 +76,31 @@ task7(){
 task8(){
   #TASK 8
   echo -e "\n${ORANGE}TASK: ${GREEN}[Setting up Accounts]${NC}\n"
-  echo -e "\n${ORANGE}This step is very important. Input a password that will be used for a newly created validators account. In next step you will recieve a public key for your validators account"
-  echo -e "${ORANGE}Once a validators account is created using your given password, I'll give you where the keystore file is located so you can import it in metamask\n\n${NC}"
+  echo -e "\n${ORANGE}This step is very important. Input a password that will be used for a newly created validators account. In the next step, you can choose to create a new account or import an existing one.\n\n${NC}"
 
   i=1
   while [[ $i -le $totalvalidators ]]; do
     echo -e "\n\n${GREEN}+-----------------------------------------------------------------------------------------------------+\n"
     read -p "Enter password for validators $i:  " password
     echo $password >chaindata/node$i/pass.txt
-    renloi --datadir chaindata/node$i account new --password chaindata/node$i/pass.txt
+
+    # Prompt user whether to import or create new account
+    read -p "Do you want to import an existing validator account? (y/n): " import_choice
+    if [ "$import_choice" == "y" ]; then
+      read -p "Paste the hex string to import the validator account: " hex_string
+      # Run import command
+      renloi account import --datadir ./chaindata/node$i --password ./chaindata/node$i/pass.txt <(echo "$hex_string")
+    else
+      # Create a new account
+      renloi --datadir chaindata/node$i account new --password chaindata/node$i/pass.txt
+    fi
+
     ((i += 1))
   done
 
   echo -e "\n${GREEN}[TASK 8 PASSED]${NC}\n"
 }
+
 
 labelNodes(){
   i=1
