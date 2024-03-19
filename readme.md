@@ -12,7 +12,7 @@ Renloi Core owes its existence to the groundbreaking work of the heco-chain proj
 The innovations catalyzed by Bitcoin and further advanced by the Ethereum Foundation have paved the way for a plethora of technological advancements and applications. We actively participate in and advocate for decentralization initiatives and their derivatives.
 
 ## Security Measures
-Renloi Core prioritizes security and has implemented the latest fixes from go-ethereum up to version v1.10.13v. These updates include comprehensive security enhancements such as code audits, bug fixes, and protocol upgrades. We are committed to maintaining a robust security posture to safeguard our users' assets and ensure the integrity of our decentralized network.
+Renloi Core prioritizes security and has implemented the latest fixes from go-ethereum up to version v1.10.13. These updates include comprehensive security enhancements such as code audits, bug fixes, and protocol upgrades. We are committed to maintaining a robust security posture to safeguard our users' assets and ensure the integrity of our decentralized network.
 
 ## System Requirements
 
