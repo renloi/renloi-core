@@ -67,7 +67,8 @@ task7(){
 
   i=1
   while [[ $i -le $totalNodes ]]; do
-    mkdir ./chaindata/node$i
+    echo "Creating directory: ./chaindata/node$i"
+    mkdir -p ./chaindata/node$i
     ((i += 1))
   done
 
