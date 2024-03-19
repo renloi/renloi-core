@@ -87,7 +87,7 @@ task8(){
     # Prompt user whether to import or create new account
     read -p "Do you want to import an existing validator account? (y/n): " import_choice
     if [ "$import_choice" == "y" ]; then
-      read -p "Paste the hex string to import the validator account: " hex_string
+      read -p "Paste the hex private key to import the validator account: " hex_string
       # Run import command
       renloi account import --datadir ./chaindata/node$i --password ./chaindata/node$i/pass.txt <(echo "$hex_string")
     else
