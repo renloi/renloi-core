@@ -20,9 +20,8 @@ package params
 import "github.com/renloi/renloi-core/common"
 
 // MainnetBootnodes are the enode URLs of the P2P bootstrap nodes running on
-// the main Ethereum network.
+// the main Renloi network.
 var MainnetBootnodes = []string{
-	// Ethereum Foundation Go Bootnodes
 	"enode://ca7a1f191c9d34117d2f03d8298e3465da68a91a6bef701a6e5aef6ea64290ffe80aa0f893ae3b1b908ef10db2fdd1eeafa8bb713da2ce21337319cc2b86b593@64.226.81.152:32668",
 }
 
