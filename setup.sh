@@ -153,7 +153,7 @@ createRpc(){
   while [[ $i -le $totalNodes ]]; do
     read -p "Enter Virtual Host(example: rpc.yourdomain.tld) without https/http: " vhost
     echo -e "\nVHOST=$vhost" >> ./.env
-    renloi --datadir ./chaindata/node$i init ./genesis.json
+    renloi --datadir ./chaindata/node$i init ./metadata/genesis.json
     ((i += 1))
   done
 }
@@ -164,7 +164,7 @@ createvalidators(){
   fi
    i=1
   while [[ $i -le $totalvalidators ]]; do
-    renloi --datadir ./chaindata/node$i init ./genesis.json
+    renloi --datadir ./chaindata/node$i init ./metadata/genesis.json
     ((i += 1))
   done
 }
