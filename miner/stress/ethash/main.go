@@ -132,24 +132,6 @@ func main() {
 	}
 }
 
-// makeGenesis creates a custom Ethash genesis block based on some pre-defined
-// faucet accounts.
-func makeGenesis(faucets []*ecdsa.PrivateKey) *core.Genesis {
-	genesis := core.DefaultRopstenGenesisBlock()
-	genesis.Difficulty = params.MinimumDifficulty
-	genesis.GasLimit = 25000000
-
-	genesis.Config.ChainID = big.NewInt(18)
-	genesis.Config.EIP150Hash = common.Hash{}
-
-	genesis.Alloc = core.GenesisAlloc{}
-	for _, faucet := range faucets {
-		genesis.Alloc[crypto.PubkeyToAddress(faucet.PublicKey)] = core.GenesisAccount{
-			Balance: new(big.Int).Exp(big.NewInt(2), big.NewInt(128), nil),
-		}
-	}
-	return genesis
-}
 
 func makeMiner(genesis *core.Genesis) (*node.Node, *eth.Ethereum, error) {
 	// Define the basic configurations for the Ethereum node

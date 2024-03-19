@@ -117,7 +117,6 @@ func TestCheckConfigForkOrder(t *testing.T) {
 	}
 	tests := []test{
 		{new: MainnetChainConfig},
-		{new: TestnetChainConfig},
 		{new: AllEthashProtocolChanges},
 		{new: AllCongressProtocolChanges},
 		{new: AllCliqueProtocolChanges},
