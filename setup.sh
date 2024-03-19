@@ -120,7 +120,7 @@ displayWelcome(){
   echo -e "\t${ORANGE}Total nodes to be created: $totalNodes"
   echo -e "${GREEN}
   \t+------------------------------------------------+
-  \t+   DPos node installation Wizard
+  \t+   Renloi node installation Wizard
   \t+   Target OS: Ubuntu 20.04 LTS (Focal Fossa)
   \t+   Your OS: $(. /etc/os-release && printf '%s\n' "${PRETTY_NAME}") 
   \t+------------------------------------------------+
