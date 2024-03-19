@@ -38,5 +38,6 @@ apt update && apt upgrade -y && apt-get install git wget curl tar
 git clone https://github.com/renloi/renloi-core
 cd renloi-core
 chmod 755 setup.sh
+mkdir tmp && mkdir chaindata
 ./setup.sh
 ```
