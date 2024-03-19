@@ -33,7 +33,7 @@ var (
 	VersionCheckUrlFlag = cli.StringFlag{
 		Name:  "check.url",
 		Usage: "URL to use when checking vulnerabilities",
-		Value: "https://renloi.ethereum.org/docs/vulnerabilities/vulnerabilities.json",
+		Value: "https://geth.ethereum.org/docs/vulnerabilities/vulnerabilities.json",
 	}
 	VersionCheckVersionFlag = cli.StringFlag{
 		Name:  "check.version",
@@ -89,7 +89,7 @@ The output of this command is supposed to be machine-readable.
 		ArgsUsage: "<versionstring (optional)>",
 		Category:  "MISCELLANEOUS COMMANDS",
 		Description: `
-The version-check command fetches vulnerability-information from https://renloi.ethereum.org/docs/vulnerabilities/vulnerabilities.json, 
+The version-check command fetches vulnerability-information from https://geth.ethereum.org/docs/vulnerabilities/vulnerabilities.json, 
 and displays information about any security vulnerabilities that affect the currently executing version.
 `,
 	}

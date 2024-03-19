@@ -135,6 +135,6 @@ replacing `<enode>` with the enode of the renloi node:
 ```
 
 [eth]: https://github.com/ethereum/devp2p/blob/master/caps/eth.md
-[dns-tutorial]: https://renloi.ethereum.org/docs/developers/dns-discovery-setup
+[dns-tutorial]: https://geth.ethereum.org/docs/developers/dns-discovery-setup
 [discv4]: https://github.com/ethereum/devp2p/tree/master/discv4.md
 [discv5]: https://github.com/ethereum/devp2p/tree/master/discv5/discv5.md

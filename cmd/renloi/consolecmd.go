@@ -18,7 +18,6 @@ package main
 
 import (
 	"fmt"
-	"path/filepath"
 	"strings"
 
 	"github.com/renloi/renloi-core/cmd/utils"
@@ -40,7 +39,7 @@ var (
 		Description: `
 The Renloi console is an interactive shell for the JavaScript runtime environment
 which exposes a node admin interface as well as the Ðapp JavaScript API.
-See https://renloi.ethereum.org/docs/interface/javascript-console.`,
+See https://geth.ethereum.org/docs/interface/javascript-console.`,
 	}
 
 	attachCommand = cli.Command{
@@ -53,7 +52,7 @@ See https://renloi.ethereum.org/docs/interface/javascript-console.`,
 		Description: `
 The Renloi console is an interactive shell for the JavaScript runtime environment
 which exposes a node admin interface as well as the Ðapp JavaScript API.
-See https://renloi.ethereum.org/docs/interface/javascript-console.
+See https://geth.ethereum.org/docs/interface/javascript-console.
 This command allows to open a console on a running renloi node.`,
 	}
 
@@ -66,7 +65,7 @@ This command allows to open a console on a running renloi node.`,
 		Category:  "CONSOLE COMMANDS",
 		Description: `
 The JavaScript VM exposes a node admin interface as well as the Ðapp
-JavaScript API. See https://renloi.ethereum.org/docs/interface/javascript-console`,
+JavaScript API. See https://geth.ethereum.org/docs/interface/javascript-console`,
 	}
 )
 
@@ -118,11 +117,6 @@ func remoteConsole(ctx *cli.Context) error {
 		path := node.DefaultDataDir()
 		if ctx.GlobalIsSet(utils.DataDirFlag.Name) {
 			path = ctx.GlobalString(utils.DataDirFlag.Name)
-		}
-		if path != "" {
-			if ctx.GlobalBool(utils.TestnetFlag.Name) {
-				path = filepath.Join(path, "testnet")
-			}
 		}
 		endpoint = fmt.Sprintf("%s/renloi.ipc", path)
 	}

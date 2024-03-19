@@ -118,7 +118,7 @@ var dashboardContent = `
 											<pre>renloi --networkid={{.NetworkID}} --datadir=$HOME/.{{.Network}} --cache=1024 --syncmode=full{{if .Ethstats}} --ethstats='{{.Ethstats}}'{{end}} --bootnodes={{.BootnodesFlat}}</pre>
 										</p>
 										<br/>
-										<p>You can download Renloi from <a href="https://renloi.ethereum.org/downloads/" target="about:blank">https://renloi.ethereum.org/downloads/</a>.</p>
+										<p>You can download Renloi from <a href="https://geth.ethereum.org/downloads/" target="about:blank">https://geth.ethereum.org/downloads/</a>.</p>
 									</div>
 								</div>
 							</div>
@@ -137,7 +137,7 @@ var dashboardContent = `
 											<pre>renloi --networkid={{.NetworkID}} --datadir=$HOME/.{{.Network}} --cache=512{{if .Ethstats}} --ethstats='{{.Ethstats}}'{{end}} --bootnodes={{.BootnodesFlat}}</pre>
 										</p>
 										<br/>
-										<p>You can download Renloi from <a href="https://renloi.ethereum.org/downloads/" target="about:blank">https://renloi.ethereum.org/downloads/</a>.</p>
+										<p>You can download Renloi from <a href="https://geth.ethereum.org/downloads/" target="about:blank">https://geth.ethereum.org/downloads/</a>.</p>
 									</div>
 								</div>
 							</div>
@@ -159,7 +159,7 @@ var dashboardContent = `
 											<pre>renloi --networkid={{.NetworkID}} --datadir=$HOME/.{{.Network}} --syncmode=light{{if .Ethstats}} --ethstats='{{.Ethstats}}'{{end}} --bootnodes={{.BootnodesFlat}}</pre>
 										</p>
 										<br/>
-										<p>You can download Renloi from <a href="https://renloi.ethereum.org/downloads/" target="about:blank">https://renloi.ethereum.org/downloads/</a>.</p>
+										<p>You can download Renloi from <a href="https://geth.ethereum.org/downloads/" target="about:blank">https://geth.ethereum.org/downloads/</a>.</p>
 									</div>
 								</div>
 							</div>
@@ -178,7 +178,7 @@ var dashboardContent = `
 											<pre>renloi --networkid={{.NetworkID}} --datadir=$HOME/.{{.Network}} --cache=16 --ethash.cachesinmem=1 --syncmode=light{{if .Ethstats}} --ethstats='{{.Ethstats}}'{{end}} --bootnodes={{.BootnodesFlat}}</pre>
 										</p>
 										<br/>
-										<p>You can download Renloi from <a href="https://renloi.ethereum.org/downloads/" target="about:blank">https://renloi.ethereum.org/downloads/</a>.</p>
+										<p>You can download Renloi from <a href="https://geth.ethereum.org/downloads/" target="about:blank">https://geth.ethereum.org/downloads/</a>.</p>
 									</div>
 								</div>
 							</div>
@@ -365,7 +365,7 @@ try! node?.start();
 										<p>Puppeth is a tool to aid you in creating a new Ethereum network down to the genesis block, bootnodes, signers, ethstats server, crypto faucet,  block explorer, dashboard and more; without the hassle that it would normally entail to manually configure all these services one by one.</p>
 										<p>Puppeth uses ssh to dial in to remote servers, and builds its network components out of docker containers using docker-compose. The user is guided through the process via a command line wizard that does the heavy lifting and topology configuration automatically behind the scenes.</p>
 										<br/>
-										<p>Puppeth is distributed as part of the <a href="https://renloi.ethereum.org/downloads/" target="about:blank">Renloi &amp; Tools</a> bundles, but can also be installed separately via:<pre>go get github.com/renloi/renloi-core/cmd/puppeth</pre></p>
+										<p>Puppeth is distributed as part of the <a href="https://geth.ethereum.org/downloads/" target="about:blank">Renloi &amp; Tools</a> bundles, but can also be installed separately via:<pre>go get github.com/renloi/renloi-core/cmd/puppeth</pre></p>
 										<br/>
 										<p><em>Copyright 2017. The go-ethereum Authors.</em></p>
 									</div>
