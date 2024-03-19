@@ -67,12 +67,12 @@ task7(){
 
   i=1
   while [[ $i -le $totalNodes ]]; do
-    echo "Creating directory: ./chaindata/node$i"
-    mkdir -p ./chaindata/node$i
+    echo "Creating directory: chaindata/node$i"
+    mkdir -p chaindata/node$i
     ((i += 1))
   done
 
-  tree ./chaindata
+  tree chaindata
   echo -e "\n${GREEN}[TASK 7 PASSED]${NC}\n"
 }
 
@@ -86,8 +86,8 @@ task8(){
   while [[ $i -le $totalvalidators ]]; do
     echo -e "\n\n${GREEN}+-----------------------------------------------------------------------------------------------------+\n"
     read -p "Enter password for validators $i:  " password
-    echo $password >./chaindata/node$i/pass.txt
-    renloi --datadir ./chaindata/node$i account new --password ./chaindata/node$i/pass.txt
+    echo $password >chaindata/node$i/pass.txt
+    renloi --datadir chaindata/node$i account new --password chaindata/node$i/pass.txt
     ((i += 1))
   done
 
@@ -97,13 +97,13 @@ task8(){
 labelNodes(){
   i=1
   while [[ $i -le $totalvalidators ]]; do
-    touch ./chaindata/node$i/.validators
+    touch chaindata/node$i/.validators
     ((i += 1))
   done 
 
   i=$((totalvalidators + 1))
   while [[ $i -le $totalNodes ]]; do
-    touch ./chaindata/node$i/.rpc
+    touch chaindata/node$i/.rpc
     ((i += 1))
   done 
 }
@@ -153,7 +153,7 @@ createRpc(){
   while [[ $i -le $totalNodes ]]; do
     read -p "Enter Virtual Host(example: rpc.yourdomain.tld) without https/http: " vhost
     echo -e "\nVHOST=$vhost" >> ./.env
-    renloi --datadir ./chaindata/node$i init ./metadata/genesis.json
+    renloi --datadir chaindata/node$i init ./metadata/genesis.json
     ((i += 1))
   done
 }
@@ -164,7 +164,7 @@ createvalidators(){
   fi
    i=1
   while [[ $i -le $totalvalidators ]]; do
-    renloi --datadir ./chaindata/node$i init ./metadata/genesis.json
+    renloi --datadir chaindata/node$i init ./metadata/genesis.json
     ((i += 1))
   done
 }
