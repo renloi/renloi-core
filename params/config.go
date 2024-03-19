@@ -54,10 +54,10 @@ var (
 		PetersburgBlock:     big.NewInt(0),
 		IstanbulBlock:       big.NewInt(0),
 		MuirGlacierBlock:    nil,
-		RedCoastBlock:       big.NewInt(0),
+		RedCoastBlock:       nil,
 		BerlinBlock:         big.NewInt(0),
 		LondonBlock:         big.NewInt(0),
-		SophonBlock:         big.NewInt(0),
+		SophonBlock:         nil,
 		ArrowGlacierBlock:   nil,
 
 		Congress: &CongressConfig{
