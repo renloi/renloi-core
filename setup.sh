@@ -63,11 +63,8 @@ task7(){
   # setting up directories and structure for node/s TASK 7
   echo -e "\n${ORANGE}TASK: ${GREEN}[Building Backend]${NC}\n"
 
-  cd ../
-
   i=1
   while [[ $i -le $totalNodes ]]; do
-    echo "Creating directory: chaindata/node$i"
     mkdir -p chaindata/node$i
     ((i += 1))
   done
