@@ -22,7 +22,7 @@ import "github.com/renloi/renloi-core/common"
 // MainnetBootnodes are the enode URLs of the P2P bootstrap nodes running on
 // the main Renloi network.
 var MainnetBootnodes = []string{
-	"enode://ca7a1f191c9d34117d2f03d8298e3465da68a91a6bef701a6e5aef6ea64290ffe80aa0f893ae3b1b908ef10db2fdd1eeafa8bb713da2ce21337319cc2b86b593@64.226.81.152:32668",
+	"enode://2451c8aa964e393b44af654e1259e632f3e8a9b818a2240274b148e5421e8e5b9eae5ea70c1a1983c3a3f221095ca37955f2825b1a58fd5349e459a30742077e@104.248.251.254:32669",
 }
 
 var V5Bootnodes = []string{}
