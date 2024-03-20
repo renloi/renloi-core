@@ -15,7 +15,6 @@ import (
 
 var (
 	validatorV1Admin        = common.HexToAddress("0xD849fa4D5475276568eC21f6deBf1C8A889Aa81B")
-	validatorV1AdminTestnet = common.HexToAddress("0x0dA5ac74D30D5b3c5ca9167A8666Ca98Fd58d9fb")
 )
 
 const (
@@ -40,11 +39,7 @@ func (s *hardForkValidatorsV1) Update(config *params.ChainConfig, height *big.In
 }
 
 func (s *hardForkValidatorsV1) getAdminByChainId(chainId *big.Int) common.Address {
-	if chainId.Cmp(params.MainnetChainConfig.ChainID) == 0 {
-		return validatorV1Admin
-	}
-
-	return validatorV1AdminTestnet
+	return validatorV1Admin
 }
 
 func (s *hardForkValidatorsV1) Execute(state *state.StateDB, header *types.Header, chainContext core.ChainContext, config *params.ChainConfig) (err error) {

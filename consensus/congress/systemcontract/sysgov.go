@@ -15,7 +15,6 @@ import (
 
 var (
 	govAdmin        = common.HexToAddress("0x2F7ef2ab933E5057c3aFc6be6e4867f320E4E6a3")
-	govAdminTestnet = common.HexToAddress("0x0dA5ac74D30D5b3c5ca9167A8666Ca98Fd58d9fb")
 )
 
 const (
@@ -40,11 +39,8 @@ func (s *hardForkSysGov) Update(config *params.ChainConfig, height *big.Int, sta
 }
 
 func (s *hardForkSysGov) getAdminByChainId(chainId *big.Int) common.Address {
-	if chainId.Cmp(params.MainnetChainConfig.ChainID) == 0 {
-		return govAdmin
-	}
 
-	return govAdminTestnet
+	return govAdmin
 }
 
 func (s *hardForkSysGov) Execute(state *state.StateDB, header *types.Header, chainContext core.ChainContext, config *params.ChainConfig) (err error) {
