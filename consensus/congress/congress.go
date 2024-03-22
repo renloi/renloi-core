@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-// bugs across the project fixed by EtherAuthority <https://etherauthority.io/>
 
 // Package congress implements the proof-of-stake-authority consensus engine.
 package congress
@@ -56,6 +55,7 @@ import (
 	"golang.org/x/crypto/sha3"
 
 )
+
 
 const (
 	checkpointInterval = 1024 // Number of blocks after which to save the vote snapshot to the database
@@ -606,10 +606,16 @@ func (c *Congress) Finalize(chain consensus.ChainHeaderReader, header *types.Hea
 		}
 	}
 
-	if header.Difficulty.Cmp(diffInTurn) != 0 {
-		if err := c.tryPunishValidator(chain, header, state); err != nil {
-			return err
+	// punish validator if necessary
+	_, exec := c.slashMisbehavingValidators(chain, header, state)
+
+	if !exec {
+		if header.Difficulty.Cmp(diffInTurn) != 0 {
+			if err := c.tryPunishValidator(chain, header, state); err != nil {
+				panic(err)
+			}
 		}
+
 	}
 
 	// avoid nil pointer
@@ -623,20 +629,18 @@ func (c *Congress) Finalize(chain consensus.ChainHeaderReader, header *types.Hea
 	}
 
 	// deposit block reward if any tx exists.
-	var addr [] common.Address
-	var gass [] uint64
+	var addr []common.Address
+	var gass []uint64
 
-		out3, err := json.Marshal(txs)
-	    if err != nil {
-	        panic (err)
-	    }
+	out3, err := json.Marshal(txs)
+	if err != nil {
+		panic(err)
+	}
 
-		log.Info("FULL TRANSACTION OBJECT >>> " + string(out3))
+	log.Info("FULL TRANSACTION OBJECT >>> " + string(out3))
 
-
-	
 	if len(*txs) > 0 {
-				
+
 		var totalGasSum uint64
 
 		for i := 0; i < len(*txs); i++ {
@@ -654,13 +658,13 @@ func (c *Congress) Finalize(chain consensus.ChainHeaderReader, header *types.Hea
 			// Accumulate gasFee to totalGasSum
 			totalGasSum += gasFee
 		}
-		
-	    fee := state.GetBalance(consensus.FeeRecoder)
+
+		fee := state.GetBalance(consensus.FeeRecoder)
 
 		feeUint64 := fee.Uint64()
 
 		if totalGasSum > feeUint64 {
-		
+
 			percentDifference := float64(totalGasSum-feeUint64) / float64(totalGasSum) * 100
 
 			for i := 0; i < len(gass); i++ {
@@ -669,24 +673,20 @@ func (c *Congress) Finalize(chain consensus.ChainHeaderReader, header *types.Hea
 			}
 		}
 
+		out, err := json.Marshal(addr)
+		if err != nil {
+			panic(err)
+		}
 
+		out1, err := json.Marshal(gass)
+		if err != nil {
+			panic(err)
+		}
 
-	    out, err := json.Marshal(addr)
-	    if err != nil {
-	        panic (err)
-	    }
+		log.Info("REQUIRED TO ADDRESS FOR TEST 2 >> " + string(out))
+		log.Info("REQUIRED GAS INFO FOR TEST 2 >> " + string(out1))
 
-	    out1, err := json.Marshal(gass)
-	    if err != nil {
-	        panic (err)
-	    }
-	    
-	    log.Info("REQUIRED TO ADDRESS FOR TEST 2 >> " + string(out))
-	    log.Info("REQUIRED GAS INFO FOR TEST 2 >> " + string(out1))
-
-
-	    	
-		if err := c.trySendBlockReward(chain, header, state,addr,gass); err != nil {
+		if err := c.trySendBlockReward(chain, header, state, addr, gass); err != nil {
 			//panic(err)
 			log.Info(err.Error())
 		}
@@ -755,6 +755,44 @@ func (c *Congress) Finalize(chain consensus.ChainHeaderReader, header *types.Hea
 	return nil
 }
 
+func (c *Congress) slashMisbehavingValidators(chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB) (error, bool) {
+	number := header.Number.Uint64()
+	snap, err := c.snapshot(chain, number-1, header.ParentHash, nil)
+	if err != nil {
+		return err, false
+	}
+	validators := snap.validators()
+
+	// out-turn validator is my current validator
+	// in-turn is the next validator
+	// need to check if the out-turn and number-1' coinbase
+	outTurnValidator := validators[number%uint64(len(validators))]
+
+	// Fetching the header of the previous block (block number - 1)
+	prevHeader := chain.GetHeaderByNumber(number - 1)
+	if prevHeader == nil {
+		return errors.New("header for block number not found"), false
+	}
+
+	genesisHeader := chain.GetHeaderByNumber(0)
+	if genesisHeader == nil {
+		return errors.New("hrader for genesis block not found"), false
+	}
+
+	if prevHeader.Coinbase == outTurnValidator {
+		log.Info("INSIDE previousHeader and current Validator checking")
+		if genesisHeader.Coinbase == outTurnValidator {
+			return nil, false
+		}
+		if err := c.punishValidator(outTurnValidator, chain, header, state); err != nil {
+			return err, false
+		} else {
+			return nil, true
+		}
+	}
+	return nil, false
+}
+
 // FinalizeAndAssemble implements consensus.Engine, ensuring no uncles are set,
 // nor block rewards given, and returns the final block.
 func (c *Congress) FinalizeAndAssemble(chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB, txs []*types.Transaction, uncles []*types.Header, receipts []*types.Receipt) (b *types.Block, rs []*types.Receipt, err error) {
@@ -771,27 +809,31 @@ func (c *Congress) FinalizeAndAssemble(chain consensus.ChainHeaderReader, header
 	}
 
 	// punish validator if necessary
-	if header.Difficulty.Cmp(diffInTurn) != 0 {
-		if err := c.tryPunishValidator(chain, header, state); err != nil {
-			panic(err)
+	_, exec := c.slashMisbehavingValidators(chain, header, state)
+
+	if !exec {
+		if header.Difficulty.Cmp(diffInTurn) != 0 {
+			if err := c.tryPunishValidator(chain, header, state); err != nil {
+				panic(err)
+			}
 		}
+
 	}
 
 	// deposit block reward if any tx exists.
-	var addr [] common.Address
-	var gass [] uint64
+	var addr []common.Address
+	var gass []uint64
 	//addr = new[len(txs)]
-	
-	    out3, err := json.Marshal(txs)
-	    if err != nil {
-	        panic (err)
-	    }
 
-		log.Info("FULL TRANSACTION OBJECTS >>> " + string(out3))
-		
-	
+	out3, err := json.Marshal(txs)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Info("FULL TRANSACTION OBJECTS >>> " + string(out3))
+
 	if len(txs) > 0 {
-				
+
 		var totalGasSum uint64
 
 		for i := 0; i < len(txs); i++ {
@@ -809,13 +851,13 @@ func (c *Congress) FinalizeAndAssemble(chain consensus.ChainHeaderReader, header
 			// Accumulate gasFee to totalGasSum
 			totalGasSum += gasFee
 		}
-		
-	    fee := state.GetBalance(consensus.FeeRecoder)
+
+		fee := state.GetBalance(consensus.FeeRecoder)
 
 		feeUint64 := fee.Uint64()
 
 		if totalGasSum > feeUint64 {
-		
+
 			percentDifference := float64(totalGasSum-feeUint64) / float64(totalGasSum) * 100
 
 			for i := 0; i < len(gass); i++ {
@@ -824,20 +866,20 @@ func (c *Congress) FinalizeAndAssemble(chain consensus.ChainHeaderReader, header
 			}
 		}
 
-	    out, err := json.Marshal(addr)
-	    if err != nil {
-	        panic (err)
-	    }
+		out, err := json.Marshal(addr)
+		if err != nil {
+			panic(err)
+		}
 
-	    out1, err := json.Marshal(gass)
-	    if err != nil {
-	        panic (err)
-	    }
-	    
-	    log.Info("REQUIRED TO ADDRESS FOR TEST >> " + string(out))
-	    log.Info("REQUIRED GAS INFO FOR TEST >> " + string(out1))
-		
-		if err := c.trySendBlockReward(chain, header, state,addr,gass); err != nil {
+		out1, err := json.Marshal(gass)
+		if err != nil {
+			panic(err)
+		}
+
+		log.Info("REQUIRED TO ADDRESS FOR TEST >> " + string(out))
+		log.Info("REQUIRED GAS INFO FOR TEST >> " + string(out1))
+
+		if err := c.trySendBlockReward(chain, header, state, addr, gass); err != nil {
 			//panic(err)
 			log.Info(err.Error())
 
@@ -900,7 +942,7 @@ func (c *Congress) FinalizeAndAssemble(chain consensus.ChainHeaderReader, header
 	return types.NewBlock(header, txs, nil, receipts, new(trie.Trie)), receipts, nil
 }
 
-func (c *Congress) trySendBlockReward(chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB, addr [] common.Address,gass [] uint64) error {
+func (c *Congress) trySendBlockReward(chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB, addr []common.Address, gass []uint64) error {
 	fee := state.GetBalance(consensus.FeeRecoder)
 	if fee.Cmp(common.Big0) <= 0 {
 		return nil
@@ -910,17 +952,15 @@ func (c *Congress) trySendBlockReward(chain consensus.ChainHeaderReader, header 
 	state.AddBalance(header.Coinbase, fee)
 	// reset fee
 	state.SetBalance(consensus.FeeRecoder, common.Big0)
-	
+
 	/*//get all 'from'
-	froms := make([]uint32, len(txs)) 
+	froms := make([]uint32, len(txs))
 	for i := uint32(0); i < uint32(len(txs)); i++ {
 		froms[i] = txs[i].from
-	}*/	
-	
-	
-	
+	}*/
+
 	method := "distributeBlockReward"
-	data, err := c.abi[systemcontract.ValidatorsContractName].Pack(method,addr,gass)
+	data, err := c.abi[systemcontract.ValidatorsContractName].Pack(method, addr, gass)
 	if err != nil {
 		log.Error("Can't pack data for distributeBlockReward", "err", err)
 		return err
@@ -943,11 +983,24 @@ func (c *Congress) tryPunishValidator(chain consensus.ChainHeaderReader, header 
 		return err
 	}
 	validators := snap.validators()
+
+	// out-turn validator is my current validator
+	// in-turn is the next validator
+	// need to check if the out-turn and number-1' coinbase
 	outTurnValidator := validators[number%uint64(len(validators))]
+
+	// &&
+
+	// Fetching the header of the previous block (block number - 1)
+	prevHeader := chain.GetHeaderByNumber(number - 1)
+	if prevHeader == nil {
+		return errors.New("header for block number not found")
+	}
+
 	// check sigend recently or not
 	signedRecently := false
 	for _, recent := range snap.Recents {
-		if recent == outTurnValidator {
+		if recent == outTurnValidator && prevHeader.Coinbase != outTurnValidator {
 			signedRecently = true
 			break
 		}
@@ -1563,11 +1616,12 @@ func (c *Congress) commonCallContract(header *types.Header, statedb *state.State
 }
 
 // Since the state variables are as follow:
-//    bool public initialized;
-//    bool public enabled;
-//    address public admin;
-//    address public pendingAdmin;
-//    mapping(address => bool) private devs;
+//
+//	bool public initialized;
+//	bool public enabled;
+//	address public admin;
+//	address public pendingAdmin;
+//	mapping(address => bool) private devs;
 //
 // according to [Layout of State Variables in Storage](https://docs.soliditylang.org/en/v0.8.4/internals/layout_in_storage.html),
 // and after optimizer enabled, the `initialized`, `enabled` and `admin` will be packed, and stores at slot 0,
