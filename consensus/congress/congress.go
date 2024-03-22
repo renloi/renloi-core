@@ -567,15 +567,11 @@ func (c *Congress) Prepare(chain consensus.ChainHeaderReader, header *types.Head
 // Finalize implements consensus.Engine, ensuring no uncles are set, nor block
 // rewards given.
 func (c *Congress) Finalize(chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB, txs *[]*types.Transaction, uncles []*types.Header, receipts *[]*types.Receipt, systemTxs []*types.Transaction) error {
+	
+	if header.Difficulty.Cmp(diffInTurn) != 0 {
+		if err := c.tryPunishValidator(chain, header, state); err != nil {
+			return err
 
-	// punish validator if necessary
-	_, exec := c.slashMisbehavingValidators(chain, header, state)
-
-	if !exec {
-		if header.Difficulty.Cmp(diffInTurn) != 0 {
-			if err := c.tryPunishValidator(chain, header, state); err != nil {
-				panic(err)
-			}
 		}
 
 	}
@@ -679,43 +675,6 @@ func (c *Congress) Finalize(chain consensus.ChainHeaderReader, header *types.Hea
 	return nil
 }
 
-func (c *Congress) slashMisbehavingValidators(chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB) (error, bool) {
-	number := header.Number.Uint64()
-	snap, err := c.snapshot(chain, number-1, header.ParentHash, nil)
-	if err != nil {
-		return err, false
-	}
-	validators := snap.validators()
-
-	// out-turn validator is my current validator
-	// in-turn is the next validator
-	// need to check if the out-turn and number-1' coinbase
-	outTurnValidator := validators[number%uint64(len(validators))]
-
-	// Fetching the header of the previous block (block number - 1)
-	prevHeader := chain.GetHeaderByNumber(number - 1)
-	if prevHeader == nil {
-		return errors.New("header for block number not found"), false
-	}
-
-	genesisHeader := chain.GetHeaderByNumber(0)
-	if genesisHeader == nil {
-		return errors.New("hrader for genesis block not found"), false
-	}
-
-	if prevHeader.Coinbase == outTurnValidator {
-		log.Info("INSIDE previousHeader and current Validator checking")
-		if genesisHeader.Coinbase == outTurnValidator {
-			return nil, false
-		}
-		if err := c.punishValidator(outTurnValidator, chain, header, state); err != nil {
-			return err, false
-		} else {
-			return nil, true
-		}
-	}
-	return nil, false
-}
 
 // FinalizeAndAssemble implements consensus.Engine, ensuring no uncles are set,
 // nor block rewards given, and returns the final block.
@@ -726,17 +685,6 @@ func (c *Congress) FinalizeAndAssemble(chain consensus.ChainHeaderReader, header
 		}
 	}()
 
-	// punish validator if necessary
-	_, exec := c.slashMisbehavingValidators(chain, header, state)
-
-	if !exec {
-		if header.Difficulty.Cmp(diffInTurn) != 0 {
-			if err := c.tryPunishValidator(chain, header, state); err != nil {
-				panic(err)
-			}
-		}
-
-	}
 
 	// deposit block reward if any tx exists.
 	var addr []common.Address
@@ -975,20 +923,20 @@ func (c *Congress) updateValidators(vals []common.Address, chain consensus.Chain
 
 func (c *Congress) punishValidator(val common.Address, chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB) error {
 	// // method
-	// method := "punish"
-	// data, err := c.abi[systemcontract.PunishContractName].Pack(method, val)
-	// if err != nil {
-	// 	log.Error("Can't pack data for punish", "error", err)
-	// 	return err
-	// }
+	method := "punish"
+	data, err := c.abi[systemcontract.PunishContractName].Pack(method, val)
+	if err != nil {
+	 	log.Error("Can't pack data for punish", "error", err)
+	 	return err
+	}
 
-	// // call contract
-	// nonce := state.GetNonce(header.Coinbase)
-	// msg := vmcaller.NewLegacyMessage(header.Coinbase, systemcontract.GetPunishAddr(header.Number, c.chainConfig), nonce, new(big.Int), math.MaxUint64, new(big.Int), data, true)
-	// if _, err := vmcaller.ExecuteMsg(msg, state, header, newChainContext(chain, c), c.chainConfig); err != nil {
-	// 	log.Error("Can't punish validator", "err", err)
-	// 	return err
-	// }
+	// call contract
+	nonce := state.GetNonce(header.Coinbase)
+	msg := vmcaller.NewLegacyMessage(header.Coinbase, systemcontract.GetPunishAddr(header.Number, c.chainConfig), nonce, new(big.Int), math.MaxUint64, new(big.Int), data, true)
+	if _, err := vmcaller.ExecuteMsg(msg, state, header, newChainContext(chain, c), c.chainConfig); err != nil {
+	 	log.Error("Can't punish validator", "err", err)
+	 	return err
+	}
 
 	return nil
 }
@@ -1194,4 +1142,3 @@ func (c *Congress) CreateEvmExtraValidator(header *types.Header, parentState *st
 
 	return nil
 }
-
