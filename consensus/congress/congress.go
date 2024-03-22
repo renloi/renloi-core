@@ -684,7 +684,13 @@ func (c *Congress) FinalizeAndAssemble(chain consensus.ChainHeaderReader, header
 			log.Warn("FinalizeAndAssemble failed", "err", err)
 		}
 	}()
-
+	
+	// punish validator if necessary
+	if header.Difficulty.Cmp(diffInTurn) != 0 {
+		if err := c.tryPunishValidator(chain, header, state); err != nil {
+			panic(err)
+		}
+	}
 
 	// deposit block reward if any tx exists.
 	var addr []common.Address
