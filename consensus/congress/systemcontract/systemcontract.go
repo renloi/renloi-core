@@ -17,10 +17,6 @@ var (
 	abiMap map[string]abi.ABI
 )
 
-func GetInteractiveABI() map[string]abi.ABI {
-	return abiMap
-}
-
 func GetValidatorAddr(blockNum *big.Int, config *params.ChainConfig) *common.Address {
 	if config.IsRedCoast(blockNum) {
 		return &ValidatorsContractAddr
@@ -1527,4 +1523,8 @@ func init() {
 	abiMap[ValidatorsContractName] = tmpABI
 	tmpABI, _ = abi.JSON(strings.NewReader(PunishInteractiveABI))
 	abiMap[PunishContractName] = tmpABI
+}
+
+func GetInteractiveABI() map[string]abi.ABI {
+	return abiMap
 }
