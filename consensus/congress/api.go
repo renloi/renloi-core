@@ -25,8 +25,7 @@ import (
 	"github.com/renloi/renloi-core/rpc"
 )
 
-// API is a user facing RPC API to allow controlling the validator and voting
-// mechanisms of the proof-of-authority scheme.
+// API is a user facing RPC API to allow controlling the validator
 type API struct {
 	chain    consensus.ChainHeaderReader
 	congress *Congress

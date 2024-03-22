@@ -86,14 +86,14 @@ type Backend interface {
 type API struct {
 	backend Backend
 
-	isPoSA bool
-	posa   consensus.PoSA
+	isDPoS bool
+	posa   consensus.DPoS
 }
 
 // NewAPI creates a new API definition for the tracing methods of the Ethereum service.
 func NewAPI(backend Backend) *API {
-	posa, isPoSA := backend.Engine().(consensus.PoSA)
-	return &API{backend: backend, isPoSA: isPoSA, posa: posa}
+	posa, isDPoS := backend.Engine().(consensus.DPoS)
+	return &API{backend: backend, isDPoS: isDPoS, posa: posa}
 }
 
 type chainContext struct {
@@ -292,7 +292,7 @@ func (api *API) traceChain(ctx context.Context, start, end *types.Block, config 
 				signer := types.MakeSigner(api.backend.ChainConfig(), task.block.Number())
 				header := task.block.Header()
 				blockCtx := core.NewEVMBlockContext(header, api.chainContext(localctx), nil)
-				if api.isPoSA {
+				if api.isDPoS {
 					_ = api.posa.PreHandle(api.backend.ChainHeaderReader(), header, task.statedb)
 					blockCtx.ExtraValidator = api.posa.CreateEvmExtraValidator(header, task.statedb)
 				}
@@ -309,11 +309,11 @@ func (api *API) traceChain(ctx context.Context, start, end *types.Block, config 
 						err     error
 						isSysTx bool
 					)
-					if api.isPoSA {
+					if api.isDPoS {
 						isSysTx, _ = api.posa.IsSysTransaction(msg.From(), tx, header)
 					}
 					if isSysTx {
-						res, err = api.tracePoSASysTx(ctx, msg.From(), tx, txctx, blockCtx, task.statedb, config)
+						res, err = api.traceDPoSSysTx(ctx, msg.From(), tx, txctx, blockCtx, task.statedb, config)
 					} else {
 						res, err = api.traceTx(ctx, msg, txctx, blockCtx, task.statedb, config)
 					}
@@ -632,7 +632,7 @@ func (api *API) traceBlock(ctx context.Context, block *types.Block, config *Trac
 
 
 	
-	if api.isPoSA {
+	if api.isDPoS {
 		blockCtx := core.NewEVMBlockContext(block.Header(), api.chainContext(ctx), nil)
 		_ = api.posa.PreHandle(api.backend.ChainHeaderReader(), header, statedb)
 		blockCtx.ExtraValidator = api.posa.CreateEvmExtraValidator(header, statedb)
@@ -655,7 +655,7 @@ func (api *API) traceBlock(ctx context.Context, block *types.Block, config *Trac
 				var err error
 				if task.isSysTx {
 					tx := txs[task.index]
-					res, err = api.tracePoSASysTx(ctx, msg.From(), tx, txctx, blockCtx, task.statedb, config)
+					res, err = api.traceDPoSSysTx(ctx, msg.From(), tx, txctx, blockCtx, task.statedb, config)
 				} else {
 					res, err = api.traceTx(ctx, msg, txctx, blockCtx, task.statedb, config)
 				}
@@ -672,7 +672,7 @@ func (api *API) traceBlock(ctx context.Context, block *types.Block, config *Trac
 	blockCtx := core.NewEVMBlockContext(block.Header(), api.chainContext(ctx), nil)
 	for i, tx := range txs {
 		var isSysTx bool
-		if api.isPoSA {
+		if api.isDPoS {
 			sender, _ := types.Sender(signer, tx)
 			isSysTx, _ = api.posa.IsSysTransaction(sender, tx, header)
 		}
@@ -754,7 +754,7 @@ func (api *API) standardTraceBlockToFile(ctx context.Context, block *types.Block
 		canon       = true
 		header      = block.Header()
 	)
-	if api.isPoSA {
+	if api.isDPoS {
 		_ = api.posa.PreHandle(api.backend.ChainHeaderReader(), header, statedb)
 		vmctx.ExtraValidator = api.posa.CreateEvmExtraValidator(header, statedb)
 	}
@@ -810,7 +810,7 @@ func (api *API) standardTraceBlockToFile(ctx context.Context, block *types.Block
 		// Execute the transaction and flush any traces to disk
 		vmenv := vm.NewEVM(vmctx, txContext, statedb, chainConfig, vmConf)
 		var isSysTx bool
-		if api.isPoSA {
+		if api.isDPoS {
 			isSysTx, _ = api.posa.IsSysTransaction(msg.From(), tx, header)
 		}
 		if isSysTx {
@@ -880,11 +880,11 @@ func (api *API) TraceTransaction(ctx context.Context, hash common.Hash, config *
 		TxIndex:   int(index),
 		TxHash:    hash,
 	}
-	if api.isPoSA {
+	if api.isDPoS {
 		tx := block.Transactions()[int(index)]
 		ok, _ := api.posa.IsSysTransaction(msg.From(), tx, block.Header())
 		if ok {
-			return api.tracePoSASysTx(ctx, msg.From(), tx, txctx, vmctx, statedb, config)
+			return api.traceDPoSSysTx(ctx, msg.From(), tx, txctx, vmctx, statedb, config)
 		}
 	}
 	return api.traceTx(ctx, msg, txctx, vmctx, statedb, config)
@@ -931,7 +931,7 @@ func (api *API) TraceCall(ctx context.Context, args ethapi.TransactionArgs, bloc
 		return nil, err
 	}
 	vmctx := core.NewEVMBlockContext(block.Header(), api.chainContext(ctx), nil)
-	if api.isPoSA {
+	if api.isDPoS {
 		vmctx.ExtraValidator = api.posa.CreateEvmExtraValidator(block.Header(), statedb)
 	}
 
@@ -1001,7 +1001,7 @@ func (api *API) traceTx(ctx context.Context, message core.Message, txctx *Contex
 // traceTx configures a new tracer according to the provided configuration, and
 // executes the given message in the provided environment. The return value will
 // be tracer dependent.
-func (api *API) tracePoSASysTx(ctx context.Context, sender common.Address, tx *types.Transaction, txctx *Context, vmctx vm.BlockContext, statedb *state.StateDB, config *TraceConfig) (interface{}, error) {
+func (api *API) traceDPoSSysTx(ctx context.Context, sender common.Address, tx *types.Transaction, txctx *Context, vmctx vm.BlockContext, statedb *state.StateDB, config *TraceConfig) (interface{}, error) {
 	// Assemble the structured logger or the JavaScript tracer
 	var (
 		tracer vm.EVMLogger

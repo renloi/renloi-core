@@ -172,7 +172,7 @@ func (eth *Ethereum) stateAtTransaction(block *types.Block, txIndex int, reexec 
 	// Lookup the statedb of parent block from the live database,
 	// otherwise regenerate it on the flight.
 	statedb, err := eth.stateAtBlock(parent, reexec, nil, true, false)
-	if err == nil && eth.isPoSA {
+	if err == nil && eth.isDPoS {
 		err = eth.posa.PreHandle(eth.blockchain, block.Header(), statedb)
 	}
 	if err != nil {
@@ -187,7 +187,7 @@ func (eth *Ethereum) stateAtTransaction(block *types.Block, txIndex int, reexec 
 		extraValidator types.EvmExtraValidator
 		header         = block.Header()
 	)
-	if eth.isPoSA {
+	if eth.isDPoS {
 		extraValidator = eth.posa.CreateEvmExtraValidator(header, statedb)
 	}
 	for idx, tx := range block.Transactions() {
@@ -203,7 +203,7 @@ func (eth *Ethereum) stateAtTransaction(block *types.Block, txIndex int, reexec 
 		// Not yet the searched for transaction, execute on top of the current state
 		vmenv := vm.NewEVM(context, txContext, statedb, eth.blockchain.Config(), vm.Config{})
 
-		if eth.isPoSA {
+		if eth.isDPoS {
 			sender, _ := types.Sender(signer, tx)
 			ok, _ := eth.posa.IsSysTransaction(sender, tx, header)
 			if ok {

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
-// Package congress implements the proof-of-stake-authority consensus engine.
+// Package congress implements the delegated-proof-of-stake consensus engine.
 package congress
 
 import (
@@ -62,7 +62,7 @@ const (
 )
 
 
-// Congress proof-of-stake-authority protocol constants.
+// Congress delegated-proof-of-stake protocol constants.
 var (
 	epochLength = uint64(30000) // Default number of blocks after which to checkpoint and reset the pending votes
 
@@ -168,7 +168,7 @@ func ecrecover(header *types.Header, sigcache *lru.ARCCache) (common.Address, er
 	return validator, nil
 }
 
-// Congress is the proof-of-stake-authority consensus engine proposed to support the
+// Congress is the delegated-proof-of-stake consensus engine proposed to support the
 // Ethereum testnet following the Ropsten attacks.
 type Congress struct {
 	chainConfig *params.ChainConfig    // ChainConfig to execute evm
@@ -195,7 +195,7 @@ type Congress struct {
 	fakeDiff bool // Skip difficulty verifications
 }
 
-// New creates a Congress proof-of-stake-authority consensus engine with the initial
+// New creates a Congress delegated-proof-of-stake consensus engine with the initial
 // validators set to the ones provided by the user.
 func New(chainConfig *params.ChainConfig, db ethdb.Database) *Congress {
 	// Set any missing consensus parameters to their defaults
@@ -1099,7 +1099,7 @@ func SealHash(header *types.Header) (hash common.Hash) {
 	return hash
 }
 
-// CongressRLP returns the rlp bytes which needs to be signed for the proof-of-stake-authority
+// CongressRLP returns the rlp bytes which needs to be signed for the delegated-proof-of-stake
 // sealing. The RLP to sign consists of the entire header apart from the 65 byte signature
 // contained at the end of the extra data.
 //

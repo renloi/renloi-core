@@ -84,8 +84,8 @@ func (p *StateProcessor) Process(block *types.Block, statedb *state.StateDB, cfg
 	blockContext := NewEVMBlockContext(header, p.bc, nil)
 	vmenv := vm.NewEVM(blockContext, vm.TxContext{}, statedb, p.config, cfg)
 	// Iterate over and process the individual transactions
-	posa, isPoSA := p.engine.(consensus.PoSA)
-	if isPoSA {
+	posa, isDPoS := p.engine.(consensus.DPoS)
+	if isDPoS {
 		if err := posa.PreHandle(p.bc, header, statedb); err != nil {
 			return nil, nil, 0, err
 		}
@@ -108,7 +108,7 @@ func (p *StateProcessor) Process(block *types.Block, statedb *state.StateDB, cfg
 	commonTxs := make([]*types.Transaction, 0, len(block.Transactions()))
 	systemTxs := make([]*types.Transaction, 0)
 	for i, tx := range block.Transactions() {
-		if isPoSA {
+		if isDPoS {
 			sender, err := types.Sender(signer, tx)
 			if err != nil {
 				return nil, nil, 0, err

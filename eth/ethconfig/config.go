@@ -230,7 +230,7 @@ func CreateConsensusEngine(stack *node.Node, chainConfig *params.ChainConfig, co
 	if chainConfig.Clique != nil {
 		return clique.New(chainConfig.Clique, db)
 	}
-	// If proof-of-stake-authority is requested, set it up
+	// If delegated-proof-of-stake is requested, set it up
 	if chainConfig.Congress != nil {
 		return congress.New(chainConfig, db)
 	}

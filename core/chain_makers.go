@@ -217,8 +217,8 @@ func GenerateChain(config *params.ChainConfig, parent *types.Block, engine conse
 		if config.DAOForkSupport && config.DAOForkBlock != nil && config.DAOForkBlock.Cmp(b.header.Number) == 0 {
 			misc.ApplyDAOHardFork(statedb)
 		}
-		posa, isPoSA := engine.(consensus.PoSA)
-		if isPoSA {
+		posa, isDPoS := engine.(consensus.DPoS)
+		if isDPoS {
 			if err := posa.PreHandle(chainreader, b.header, statedb); err != nil {
 				return nil, nil
 			}

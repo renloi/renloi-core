@@ -840,9 +840,9 @@ func (s *PublicBlockChainAPI) GetBlockByHash(ctx context.Context, hash common.Ha
 }
 
 func (s *PublicBlockChainAPI) GetSysTransactionsByBlockNumber(ctx context.Context, number rpc.BlockNumber) ([]*RPCTransaction, error) {
-	posa, isPoSA := s.b.Engine().(consensus.PoSA)
-	if !isPoSA {
-		return nil, errors.New("not a PoSA engine")
+	posa, isDPoS := s.b.Engine().(consensus.DPoS)
+	if !isDPoS {
+		return nil, errors.New("not a DPoS engine")
 	}
 
 	block, err := s.b.BlockByNumber(ctx, number)
@@ -853,9 +853,9 @@ func (s *PublicBlockChainAPI) GetSysTransactionsByBlockNumber(ctx context.Contex
 }
 
 func (s *PublicBlockChainAPI) GetSysTransactionsByBlockHash(ctx context.Context, hash common.Hash) ([]*RPCTransaction, error) {
-	posa, isPoSA := s.b.Engine().(consensus.PoSA)
-	if !isPoSA {
-		return nil, errors.New("not a PoSA engine")
+	posa, isDPoS := s.b.Engine().(consensus.DPoS)
+	if !isDPoS {
+		return nil, errors.New("not a DPoS engine")
 	}
 	block, err := s.b.BlockByHash(ctx, hash)
 	if err != nil || block == nil {
@@ -864,7 +864,7 @@ func (s *PublicBlockChainAPI) GetSysTransactionsByBlockHash(ctx context.Context,
 	return s.getSysTransactions(block, posa)
 }
 
-func (s *PublicBlockChainAPI) getSysTransactions(block *types.Block, posa consensus.PoSA) ([]*RPCTransaction, error) {
+func (s *PublicBlockChainAPI) getSysTransactions(block *types.Block, posa consensus.DPoS) ([]*RPCTransaction, error) {
 	header := block.Header()
 	bhash := block.Hash()
 	bnumber := block.NumberU64()

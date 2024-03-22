@@ -131,8 +131,8 @@ type PoW interface {
 	Hashrate() float64
 }
 
-// PoSA is a consensus engine based on proof-of-stake-authority.
-type PoSA interface {
+// DPoS is a consensus engine based on delegated-proof-of-stake.
+type DPoS interface {
 	Engine
 
 	// PreHandle runs any pre-transaction state modifications (e.g. apply hard fork rules).

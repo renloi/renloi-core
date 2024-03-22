@@ -126,8 +126,8 @@ func GetCanCreateFn(chain ChainContext) vm.CanCreateFunc {
 			return true
 		}
 	}
-	posa, isPoSA := chain.Engine().(consensus.PoSA)
-	if isPoSA {
+	posa, isDPoS := chain.Engine().(consensus.DPoS)
+	if isDPoS {
 		return func(db vm.StateDB, address common.Address, height *big.Int) bool {
 			return posa.CanCreate(db, address, height)
 		}

@@ -132,9 +132,9 @@ type worker struct {
 	eth         Backend
 	chain       *core.BlockChain
 
-	// Is the engine a PoSA engine?
-	posa   consensus.PoSA
-	isPoSA bool
+	// Is the engine a DPoS engine?
+	posa   consensus.DPoS
+	isDPoS bool
 
 	// Feeds
 	pendingLogsFeed event.Feed
@@ -198,12 +198,12 @@ type worker struct {
 }
 
 func newWorker(config *Config, chainConfig *params.ChainConfig, engine consensus.Engine, eth Backend, mux *event.TypeMux, isLocalBlock func(*types.Block) bool, init bool) *worker {
-	posa, isPoSA := engine.(consensus.PoSA)
+	posa, isDPoS := engine.(consensus.DPoS)
 	worker := &worker{
 		config:             config,
 		chainConfig:        chainConfig,
 		engine:             engine,
-		isPoSA:             isPoSA,
+		isDPoS:             isDPoS,
 		posa:               posa,
 		eth:                eth,
 		mux:                mux,
@@ -850,7 +850,7 @@ func (w *worker) commitTransactions(txs *types.TransactionsByPriceAndNonce, coin
 			continue
 		}
 		// consensus related validation
-		if w.isPoSA {
+		if w.isDPoS {
 			err := w.posa.ValidateTx(from, tx, w.current.header, w.current.state)
 			if err != nil {
 				log.Trace("Ignoring consensus invalid transaction", "hash", tx.Hash().String(), "from", from.String(), "to", tx.To(), "err", err)
@@ -978,7 +978,7 @@ func (w *worker) commitNewWork(interrupt *int32, noempty bool, timestamp int64) 
 	}
 	// Create the current work task and check any fork transitions needed
 	env := w.current
-	if w.isPoSA {
+	if w.isDPoS {
 		if err := w.posa.PreHandle(w.chain, header, env.state); err != nil {
 			log.Error("Failed to apply system contract upgrade", "err", err)
 			return

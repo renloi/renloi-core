@@ -209,7 +209,7 @@ func (b *EthAPIBackend) GetEVM(ctx context.Context, msg core.Message, state *sta
 	}
 	txContext := core.NewEVMTxContext(msg)
 	context := core.NewEVMBlockContext(header, b.eth.BlockChain(), nil)
-	if b.eth.isPoSA {
+	if b.eth.isDPoS {
 		// make sure to use parent state to avoid mix up inner cache
 		parent := b.eth.blockchain.GetHeader(header.ParentHash, header.Number.Uint64()-1)
 		if parent == nil {
