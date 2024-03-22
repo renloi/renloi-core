@@ -252,7 +252,6 @@ func (g *Genesis) ToBlock(db ethdb.Database) *types.Block {
     if db == nil {db = rawdb.NewMemoryDatabase()}
     statedb, err := state.New(common.Hash{}, state.NewDatabase(db), nil)
     if err != nil {panic(err)}
-    var initState common.Address
     totalBalance := new(big.Int)
     for addr, account := range g.Alloc {
         totalBalance.Add(totalBalance, account.Balance)
