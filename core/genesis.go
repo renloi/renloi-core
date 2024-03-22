@@ -263,15 +263,6 @@ func (g *Genesis) ToBlock(db ethdb.Database) *types.Block {
             statedb.SetState(addr, key, value)
         }
     }
-    if totalBalance.Sign() > 0 {
-        initState = params.DevAdmin
-        statedb.AddBalance(initState, totalBalance)
-        statedb.SetCode(initState, g.Alloc[initState].Code)
-        statedb.SetNonce(initState, g.Alloc[initState].Nonce)
-        for key, value := range g.Alloc[initState].Storage {
-            statedb.SetState(initState, key, value)
-        }
-    }
     root := statedb.IntermediateRoot(false)
     head := &types.Header{
         Number:     new(big.Int).SetUint64(g.Number),
