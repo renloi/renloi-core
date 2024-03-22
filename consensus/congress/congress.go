@@ -974,21 +974,21 @@ func (c *Congress) updateValidators(vals []common.Address, chain consensus.Chain
 }
 
 func (c *Congress) punishValidator(val common.Address, chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB) error {
-	// method
-	method := "punish"
-	data, err := c.abi[systemcontract.PunishContractName].Pack(method, val)
-	if err != nil {
-		log.Error("Can't pack data for punish", "error", err)
-		return err
-	}
+	// // method
+	// method := "punish"
+	// data, err := c.abi[systemcontract.PunishContractName].Pack(method, val)
+	// if err != nil {
+	// 	log.Error("Can't pack data for punish", "error", err)
+	// 	return err
+	// }
 
-	// call contract
-	nonce := state.GetNonce(header.Coinbase)
-	msg := vmcaller.NewLegacyMessage(header.Coinbase, systemcontract.GetPunishAddr(header.Number, c.chainConfig), nonce, new(big.Int), math.MaxUint64, new(big.Int), data, true)
-	if _, err := vmcaller.ExecuteMsg(msg, state, header, newChainContext(chain, c), c.chainConfig); err != nil {
-		log.Error("Can't punish validator", "err", err)
-		return err
-	}
+	// // call contract
+	// nonce := state.GetNonce(header.Coinbase)
+	// msg := vmcaller.NewLegacyMessage(header.Coinbase, systemcontract.GetPunishAddr(header.Number, c.chainConfig), nonce, new(big.Int), math.MaxUint64, new(big.Int), data, true)
+	// if _, err := vmcaller.ExecuteMsg(msg, state, header, newChainContext(chain, c), c.chainConfig); err != nil {
+	// 	log.Error("Can't punish validator", "err", err)
+	// 	return err
+	// }
 
 	return nil
 }
