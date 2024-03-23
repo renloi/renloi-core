@@ -78,16 +78,10 @@ func (arguments Arguments) isTuple() bool {
 // Unpack performs the operation hexdata -> Go format.
 func (arguments Arguments) Unpack(data []byte) ([]interface{}, error) {
 	if len(data) == 0 {
-		nonIndexedArgs := arguments.NonIndexed()
-		if len(nonIndexedArgs) != 0 {
-			return nil, fmt.Errorf("abi: attempting to unmarshall an empty string while non-indexed arguments are expected")
+		if len(arguments.NonIndexed()) != 0 {
+			return nil, fmt.Errorf("abi: attempting to unmarshall an empty string while arguments are expected")
 		}
-		// Nothing to unmarshal, return default variables
-		defaultVars := make([]interface{}, len(nonIndexedArgs))
-		for index, arg := range nonIndexedArgs {
-			defaultVars[index] = reflect.New(arg.Type.GetType())
-		}
-		return defaultVars, nil
+		return make([]interface{}, 0), nil
 	}
 	return arguments.UnpackValues(data)
 }
