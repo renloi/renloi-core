@@ -30,7 +30,7 @@ To install Renloi Core on Ubuntu, follow these steps:
 1. Ensure your system is up to date and equipped with necessary tools:
 ```bash
 sudo su
-apt update && apt upgrade -y && apt-get install git wget curl tar
+apt update && apt upgrade -y && apt-get install git wget curl tar tmux
 ```
 
 2. Clone the Renloi Core repository and initiate the bootstrap process:
