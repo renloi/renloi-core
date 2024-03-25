@@ -33,6 +33,17 @@ func GetPunishAddr(blockNum *big.Int, config *params.ChainConfig) *common.Addres
 
 const ValidatorsInteractiveABI = `[
 	{
+		"inputs": [
+			{
+				"internalType": "address[]",
+				"name": "vals",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -367,25 +378,6 @@ const ValidatorsInteractiveABI = `[
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "previousOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
 				"indexed": false,
 				"internalType": "address",
 				"name": "user",
@@ -481,19 +473,6 @@ const ValidatorsInteractiveABI = `[
 	{
 		"inputs": [],
 		"name": "ValidatorContractAddr",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "_owner",
 		"outputs": [
 			{
 				"internalType": "address",
@@ -785,19 +764,6 @@ const ValidatorsInteractiveABI = `[
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address[]",
-				"name": "vals",
-				"type": "address[]"
-			}
-		],
-		"name": "initialize",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "initialized",
 		"outputs": [
@@ -881,19 +847,6 @@ const ValidatorsInteractiveABI = `[
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -939,13 +892,6 @@ const ValidatorsInteractiveABI = `[
 			}
 		],
 		"name": "removeValidatorIncoming",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "renounceOwnership",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -1042,19 +988,6 @@ const ValidatorsInteractiveABI = `[
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
 				"name": "validator",
 				"type": "address"
 			}
@@ -1103,19 +1036,6 @@ const ValidatorsInteractiveABI = `[
 			}
 		],
 		"name": "updateActiveValidatorSet",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_minStaking",
-				"type": "uint256"
-			}
-		],
-		"name": "updateMinimumValidatorStaking",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
