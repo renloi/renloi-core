@@ -13,7 +13,7 @@
     "muirGlacierBlock": 0,
     "congress": { 
       "period": 1,  
-      "epoch": 500
+      "epoch": 1500
     }
   },
   "nonce": "0x0",
