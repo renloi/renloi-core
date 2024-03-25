@@ -39,11 +39,10 @@ countNodes(){
 startRpc(){
     i=$((totalValidator + 1))
     while [[ $i -le $totalNodes ]]; do
-        if tmux has-session -t node$i > /dev/null 2>&1; then
+        if screen -list | grep -q "node$i"; then
             :
         else
-            tmux new-session -d -s node$i
-            tmux send-keys -t node$i " ./node_src/build/bin/geth --datadir ./chaindata/node$i --networkid 268 --ws --ws.addr $IP --ws.origins '*' --ws.port 8545 --http --http.port 80 --rpc.txfeecap 0  --http.corsdomain '*' --nat 'any' --http.api db,eth,net,web3,personal,txpool,miner,debug --http.addr $IP --http.vhosts=$VHOST --vmdebug --pprof --pprof.port 6060 --pprof.addr $IP --gcmode=archive --syncmode=full --ipcpath './chaindata/node$i/geth.ipc' console" Enter
+            screen -S "node$i" -d -m ./node_src/build/bin/geth --datadir ./chaindata/node$i --networkid 268 --ws --ws.addr $IP --ws.origins '*' --ws.port 8545 --http --http.port 80 --rpc.txfeecap 0  --http.corsdomain '*' --nat 'any' --http.api db,eth,net,web3,personal,txpool,miner,debug --http.addr $IP --http.vhosts=$VHOST --vmdebug --pprof --pprof.port 6060 --pprof.addr $IP --gcmode=archive --syncmode=full --ipcpath './chaindata/node$i/geth.ipc' console
         fi
         ((i += 1))
     done
@@ -53,11 +52,10 @@ startValidator(){
     i=1
     j=69
     while [[ $i -le $totalValidator ]]; do
-        if tmux has-session -t node$i > /dev/null 2>&1; then
+        if screen -list | grep -q "node$i"; then
             :
         else
-            tmux new-session -d -s node$i
-            tmux send-keys -t 0 "./node_src/build/bin/geth --datadir ./chaindata/node$i --networkid 268 --bootnodes $BOOTNODE --mine --port 326$j --nat extip:$IP --gpo.percentile 0 --gpo.maxprice 100 --gpo.ignoreprice 0 --unlock 0 --password ./chaindata/node$i/pass.txt --syncmode=full console" Enter
+            screen -S "node$i" -d -m ./node_src/build/bin/geth --datadir ./chaindata/node$i --networkid 268 --bootnodes $BOOTNODE --mine --port 326$j --nat extip:$IP --gpo.percentile 0 --gpo.maxprice 100 --gpo.ignoreprice 0 --unlock 0 --password ./chaindata/node$i/pass.txt --syncmode=full console
         fi
         ((i += 1))
         ((j += 1))
@@ -76,7 +74,7 @@ finalize(){
         startValidator
     fi
     echo -e "\n${GREEN}+------------------ Active Nodes -------------------+"
-    tmux ls
+    screen -list
     echo -e "\n${GREEN}+------------------ Active Nodes -------------------+${NC}"
 }
 
