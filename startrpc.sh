@@ -3,7 +3,7 @@ BOOTNODES=$(jq -r '.bootnodes | join(", ")' bootnodes.json)
 
 # Start renloi with bootnodes from JSON file
 renloi \
-    --datadir ./chaindata/node1 \
+    --datadir ./chaindata/node2 \
     --networkid 268 \
     --ws \
     --bootnodes="$BOOTNODES" \
@@ -25,6 +25,6 @@ renloi \
     --pprof.addr 127.0.0.1 \
     --gcmode=archive \
     --syncmode=full \
-    --ipcpath './chaindata/node1/renloi.ipc' \
+    --ipcpath './chaindata/node2/renloi.ipc' \
     --snapshot=false \
     console
