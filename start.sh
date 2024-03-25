@@ -52,10 +52,10 @@ startValidator(){
     i=1
     j=69
     while [[ $i -le $totalValidator ]]; do
-        if screen -list | grep -q "node$i"; then
-            :
-        else
-            screen -S "node$i" -d -m ./node_src/build/bin/geth --datadir ./chaindata/node$i --networkid 268 --bootnodes $BOOTNODE --mine --port 326$j --nat extip:$IP --gpo.percentile 0 --gpo.maxprice 100 --gpo.ignoreprice 0 --unlock 0 --password ./chaindata/node$i/pass.txt --syncmode=full console
+        if ! screen -list | grep -q "node$i"; then
+            echo "Command to start Validator node $i:"
+            echo "./node_src/build/bin/geth --datadir ./chaindata/node$i --networkid 268 --bootnodes $BOOTNODE --mine --port 326$j --nat extip:$IP --gpo.percentile 0 --gpo.maxprice 100 --gpo.ignoreprice 0 --unlock 0 --password ./chaindata/node$i/pass.txt --syncmode=full console"
+            echo
         fi
         ((i += 1))
         ((j += 1))
