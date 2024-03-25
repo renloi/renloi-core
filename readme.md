@@ -36,6 +36,6 @@ apt update && apt upgrade -y && apt-get install git wget curl tar
 2. Clone the Renloi Core repository and initiate the bootstrap process:
 ```bash
 git clone https://github.com/renloi/renloi-core
-cd renloi-core && chmod 755 setup.sh && chmod 755 start.sh 
+cd renloi-core && chmod 755 setup.sh
 ./setup.sh
 ```
