@@ -940,7 +940,24 @@ func (c *Congress) getTopValidators(chain consensus.ChainHeaderReader, header *t
 	if err != nil {
 		return []common.Address{}, err
 	}
+    if len(result) == 0{
+		blockNumber := header.Number.Uint64()
+		snap, err := c.snapshot(chain, blockNumber - 1, header.ParentHash, nil)
+		if err != nil {
+			return nil, nil
+		}
+	
+		validators := snap.validators()
 
+		// Check if validators list is empty
+		if len(validators) == 0 {
+			return []common.Address{}, errors.New("Validators list is empty")
+		}
+
+		// Return the sorted validators list
+		sort.Sort(validatorsAscending(validators))
+		return validators, nil
+	}
 	// unpack data
 	ret, err := c.abi[systemcontract.ValidatorsContractName].Unpack(method, result)
 	if err != nil {
