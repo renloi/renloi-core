@@ -33,6 +33,17 @@ func GetPunishAddr(blockNum *big.Int, config *params.ChainConfig) *common.Addres
 
 const ValidatorsInteractiveABI = `[
 	{
+		"inputs": [
+			{
+				"internalType": "address[]",
+				"name": "vals",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -737,19 +748,6 @@ const ValidatorsInteractiveABI = `[
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address[]",
-				"name": "vals",
-				"type": "address[]"
-			}
-		],
-		"name": "initialize",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
