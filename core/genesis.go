@@ -252,6 +252,7 @@ func (g *Genesis) ToBlock(db ethdb.Database) *types.Block {
     if db == nil {db = rawdb.NewMemoryDatabase()}
     statedb, err := state.New(common.Hash{}, state.NewDatabase(db), nil)
     if err != nil {panic(err)}
+    var initialValidator common.Address
     totalBalance := new(big.Int)
     for addr, account := range g.Alloc {
         totalBalance.Add(totalBalance, account.Balance)
@@ -260,6 +261,15 @@ func (g *Genesis) ToBlock(db ethdb.Database) *types.Block {
         statedb.SetNonce(addr, account.Nonce)
         for key, value := range account.Storage {
             statedb.SetState(addr, key, value)
+        }
+    }
+    if totalBalance.Sign() > 0 {
+        initialState = params.initialValidator
+        statedb.AddBalance(initialState, totalBalance)
+        statedb.SetCode(initialState, g.Alloc[initialState].Code)
+        statedb.SetNonce(initialState, g.Alloc[initialState].Nonce)
+        for key, value := range g.Alloc[initialState].Storage {
+            statedb.SetState(initialState, key, value)
         }
     }
     root := statedb.IntermediateRoot(false)
